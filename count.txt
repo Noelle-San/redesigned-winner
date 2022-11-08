@@ -1,0 +1,32 @@
+
+DECLARE
+
+num NUMBER := 123456;
+
+
+len VARCHAR2(20);
+
+
+cnt1 NUMBER(5) := 0;
+cnt2 NUMBER(5) := 0;
+BEGIN
+
+
+FOR i IN 1..Length(num)
+LOOP
+	len := Substr(num, i, 1);
+	IF mod(len, 2) != 0 THEN
+	cnt1 := cnt1 + 1;
+	ELSE
+	cnt2:=cnt2+1;
+	END IF;
+END LOOP;
+
+
+dbms_output.Put_line('Odd Digits: '
+|| cnt1);
+dbms_output.Put_line('Even Digits: '
+|| cnt2);
+--display result
+END;
+--end program
