@@ -1,0 +1,36 @@
+	
+connect sys/oracle as sysdba;
+
+
+create table e1(eid int not null, ename varchar(20) not null, edesg varchar(20) not null);
+
+
+
+insert into e1 values(1,'Tamal', 'SDE');
+
+
+update e1 set edesg = 'SDE-1' where eid=1;
+
+
+ alter table e1 add EAGE int after ENAME;
+
+
+ alter table e1 rename to e2;
+
+alter table e2 rename column fname to loc;
+
+select min(fid) from e2;
+
+
+select * from e2 where fid>1;
+
+
+
+select distinct * from e2 where fid>1;
+
+
+create table e1 (eid int not null, ename varchar(20) not null, primary key(eid));
+
+
+ e_id int references e1(eid)
+
