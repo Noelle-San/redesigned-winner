@@ -1,0 +1,990 @@
+ASSIGNMENT 2
+
+
+
+
+
+
+
+
+1-Configure the hostname of thr switch as SW1
+ans-    
+Switch>enable
+Switch#config t
+Enter configuration commands,one per line.
+End with CNTL/Z
+Switch(config)#hostname SW1
+SW1(config)#
+
+2-Set a message of the day (MOTD) banner for the switch-
+  *****************************
+  Only Authorized Users Allowed
+  *****************************
+ans-
+SW1(config)#banner motd#
+Enter TEXT message. End with the character'#'
+  *****************************
+  Only Authorized Users Allowed
+  *****************************
+#
+
+3-Configure a
+ line console password- India@123
+ enable secret paswword- uem@123
+ans-
+SW1(config)# line con 0
+SW1(config-line)#password India@123
+SW1(config-line)#login
+SW1(config-line)#exit
+SW1(config)#exit
+SW1#
+%SYS-5-CONFIG_I: Configured from console by console
+exit
+SW1 con0 is now available
+Press RETURN to get started
+*****************************
+Only Authorized Users Allowed
+*****************************
+User Access Verification
+Password:India@123
+SW1>enable
+SW1#config t
+Enter configuration commands one per line.
+ End with CNTL/2
+SW1(config)#enable secret password Uem@123
+SW1(Config)#exit
+
+
+
+
+
+
+
+ASSIGNMENT 3
+
+
+
+
+
+
+
+
+FTP Server Configuration:
+Steps:
+1) Open Cisco Packet Tracer and select 2 End Devices (PC device), 1 Switch, 1 Router, 1 Server.
+2) Now Connect all the devices using the auto connection.
+3) Then configure the IP addresses as per the diagram
+4) Now just wait for some time to let all the connection status turns green.
+5) Now we have achieved a connection where a class C IP address is being translated to class A IP Address.
+6) Go to one of the PC devices and on Desktop tab select CMD.
+7) Now we need to check the connection to the server by C:\>ping 10.10.10.2 
+8) If reply is coming then it means the server is properly configured and connected.
+9) Go to the Server → Services →FTP.
+10) Put on the FTP service and give username and password and click on ADD.
+11) Come back to PC device and open the CMD and type C:\>ftp 10.10.10.2 
+12) It will ask for username and password. Provide the username and password configured earlier.
+13) Once the connection is established exit rom the CMD and go to Text Editor and make a new text file.
+14) Save the new text file and return to cmd and type ftp>put filenme.txt 
+15) This will send the text file from the PC device (192.168.0.2) to Server (10.10.10.2).
+16) Now to verify that the file has been transferred to the server, so type ftp>dir
+17) You will see your Filename in the list.
+18) Now to get a file from server to PC type ftp>get filename.txt 
+19) Now exit from FTP type ctrl+C, then type dir to check that the file is there in the PC or not.
+20) So we have successfully send and got a file from a server using FTP protocol.
+
+
+
+ DHCP Server Configuration:
+1) Open Cisco Packet Tracer and select 2 End Devices (PC device), 1 Switch, 1 Router, 1 Server.
+2) Now Connect all the devices using the auto connection.
+3) Then configure the IP addresses as per the diagram.
+4) Now just wait for some time to let all the connection status turns green.
+5) Now go to the server → Desktop → IP Configuration and set the IP 192.168.0.1.
+6) Go to Services → DHCP and set Default Gateway 192.168.0.1 and DNS Server 10.0.0.1.
+7) Set the Start IP 192.168.0.0 and Max Users 256
+8) Now go to every PC device → Desktop → IP Configuration and set it to DHCP.
+9) Now all the PC will have a DHCP address.
+
+
+
+
+
+
+
+
+ASSIGNMENT 4
+
+
+
+
+
+
+
+
+1) Write a program to find the IP address of the system.
+ans-
+import socket
+print("Host Name:", socket.gethostname(), "\nIp 
+Address:", socket.gethostbyname(socket.gethostname()))
+
+2) Write a socket program for implementation of echo.
+ans-
+
+Server side code:
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(("127.0.0.1", 9090))
+s.listen()
+(c, cip) = s.accept()
+c.send(c.recv(1024))
+s.close()
+
+
+Client side code:
+import socket
+c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+c.connect(("127.0.0.1", 9090))
+data = input()
+c.send(data.encode())
+dataFromServer = c.recv(1024)
+print(dataFromServer.decode())
+c.close()
+
+3) Write a client-server application for chat using TCP.
+ans-
+
+Server side code:
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(("127.0.0.1", 9090))
+s.listen()
+while True:
+ (c, cip) = s.accept()
+ data = c.recv(1024).decode()
+ print("Client:",data)
+ data = input("Enter Text: ")
+ c.send(data.encode())
+
+Client side code:
+import socket
+c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+c.connect(("127.0.0.1", 9090))
+while True:
+ data = input("Enter Text: ")
+ c.send(data.encode())
+ data = c.recv(1024).decode()
+ print("Server:",data)
+
+4) Write a program using client server socket programming: Client needs to authenticate itself by entering a 
+server defined string as a password (like OTP) and then to say Hi to server. Server replies with a Hello. Press 
+any key to exit.
+ans-
+Server side code:
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(("127.0.0.1", 9090))
+s.listen()
+(c, cip) = s.accept()
+c.send("Enter OTP:".encode())
+otp = c.recv(1024).decode()
+if otp == '8894':
+ c.send("You are Authenticated".encode())
+ data = c.recv(1024).decode()
+ print("Client:",data)
+ data = input("Enter Text: ")
+ c.send(data.encode())
+else:
+ c.send("You are Authenticated".encode())
+s.close()
+
+Client side code:
+import socket
+c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+c.connect(("127.0.0.1", 9090))
+data = c.recv(1024).decode()
+print(data, end=" ")
+otp = input()
+c.send(otp.encode())
+data = c.recv(1024).decode()
+print(data)
+if data == "You are Authenticated":
+ data = input("Enter Text: ")
+ c.send(data.encode())
+ data = c.recv(1024).decode()
+ print("Server:",data)
+else:
+ c.close()
+
+
+
+
+
+
+
+ASSIGNMENT 5
+
+
+
+
+
+
+
+
+1) Write a program to Perform File Transfer in Client & Server Using TCP/IP.
+ans-
+Server side code:
+import socket
+import tqdm
+import os
+BUFFER_SIZE = 1024
+s = socket.socket()
+s.bind(('127.0.0.1', 5001))
+s.listen(1)
+print("Listening as 127.0.0.1:5001")
+client_socket, address = s.accept()
+print(f"Connected to {address[0]}:{str(address[1])}")
+filename, filesize = 
+client_socket.recv(BUFFER_SIZE).decode().split('||')
+filename = os.path.basename(filename)
+filesize = int(filesize)
+progress = tqdm.tqdm(range(filesize), f"Receiving 
+{filename}", unit="B", unit_scale=True, 
+unit_divisor=1024)
+with open(filename, "wb") as f:
+ while True:
+ bytes_read = client_socket.recv(BUFFER_SIZE)
+ if not bytes_read:
+ break
+ f.write(bytes_read)
+ progress.update(len(bytes_read))
+client_socket.close()
+s.close()
+
+
+Client side code:
+import socket
+import tqdm
+import os
+BUFFER_SIZE = 1024
+filename = input("Enter the file path or filename: ")
+filesize = os.path.getsize(filename)
+s = socket.socket()
+print("Connecting to 127.0.0.1:5001")
+s.connect(("127.0.0.1", 5001))
+print("Connected.")
+s.send(f"{filename}||{filesize}".encode())
+progress = tqdm.tqdm(range(filesize), f"Sending 
+{filename}", unit="B", unit_scale=True, 
+unit_divisor=1024)
+with open(filename, "rb") as f:
+ while True:
+ bytes_read = f.read(BUFFER_SIZE)
+ if not bytes_read:
+ break
+ s.sendall(bytes_read)
+ progress.update(len(bytes_read))
+s.close()
+
+
+2) Write a program to implement Remote Command Execution (RCE)
+ans-
+Server side code:
+import socket
+import os
+BUFFER_SIZE = 4096
+s = socket.socket()
+s.bind(('127.0.0.1', 5001))
+s.listen(1)
+print("Listening as 127.0.0.1:5001")
+client_socket, address = s.accept()
+print(f"{address[0]}:{str(address[1])} is Connected to 
+terminal")
+while True:
+ print("\nClient@Server>>", end=" ")
+ command = client_socket.recv(BUFFER_SIZE).decode()
+ print(command)
+ if command == 'exit':
+ break
+ os.system(command)
+print("Closing remote connection with client")
+client_socket.close()
+s.close()
+
+
+Client side code:
+import socket
+BUFFER_SIZE = 4096
+s = socket.socket()
+print("Connecting to 127.0.0.1:5001")
+s.connect(("127.0.0.1", 5001))
+print("Connected to Server Terminal")
+while True:
+ command = input("\nServer>> ")
+ s.sendall(command.encode())
+ if command == 'exit':
+ break
+print("Closing remote connection with Server")
+s.close()
+
+
+
+
+
+
+
+ASSIGNMENT 6
+
+
+
+
+
+
+
+
+1-
+import socket
+import time
+host = "127.0.0.1"
+port = 9999
+addr = (host,port)
+client = socket.socket(socket.AF_INET, socket.sock_DGRAM)
+message= (input("Enter a message")) . encode()
+client.sendto (message.addr)
+while True:
+	data,addr.client.recvframe(1024)
+	data = data.decode()
+	print(data)
+
+
+2-
+import socket
+import time
+S.address = "127.0.0.1"
+port.address = 9999
+server = socket.socket(socket.AF_INET,socket.sock_DGRAM)
+server.bind((S.address,port_address))
+message,address = server.recv from(1024)
+print(message)
+while True:
+	message,address = server.recvfrom(1024)
+	message = message.decode()
+	print(message)
+	t = time.localtime()
+	current_time = time.strftime("%H:%M:%S",t)
+	current_time = current_time.encode()
+	server.sendto(current_time,address)
+
+
+3-
+
+import socket
+import time
+S.address = "13.0.1.219"
+port_address = 9999
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server.bind((s_address, port_adress))
+message,address = server.recvfrom(1024)
+message = message.decode()
+print(message)
+while True:
+	t = time.localtime()
+	current_time = time.stiftime("%H:%M:%S",t)
+	current_time = current_time.encode()
+	server sendto(current_time,address)
+	time.sleep(5)
+
+
+4-
+import socket
+import time
+host = "13.0.1.219"
+port = 9999
+addr = (host,port)
+client=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+message = (input("Enter a message")).encode()
+client.sendto(message,addr)
+while True:
+	data,addr = client.recvfrom(1024)
+	data=data.decode()
+	print(data)
+
+
+
+
+
+
+
+
+
+ASSIGNMENT 7
+
+
+
+
+
+
+
+Simulation of ARP or RARP
+
+Server side code -> 
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<sys/shm.h>
+#include<string.h>
+main()
+{
+   int shmid,a,i;
+   char *ptr,*shmptr;
+   shmid=shmget(3000,10,IPC_CREAT|0666);
+   shmptr=shmat(shmid,NULL,0);
+   ptr=shmptr;
+   for(i=0;i<3;i++)
+   {
+       puts("Enter the name:");
+       scanf("%s",ptr);
+       a=strlen(ptr);
+       printf("String length:%d",a);
+       ptr[a]=' ';
+	 puts("Enter ip:");
+	 ptr=ptr+a+1;
+	 scanf("%s",ptr);
+	 ptr[a]='\n';
+	 ptr=ptr+a+1;
+   }
+   ptr[strlen(ptr)]='\0';
+   printf("\nARP table at serverside is=\n%s",shmptr);
+   shmdt(shmptr);
+}
+
+Client side code -> 
+
+#include<stdio.h>
+#include<string.h>
+#include<sys/types.h>
+#include<sys/shm.h>
+main()
+{
+int shmid,a;
+char *ptr,*shmptr;
+char ptr2[51],ip[12],mac[26];
+shmid=shmget(3000,10,0666);
+shmptr=shmat(shmid,NULL,0);
+puts("The ARPtable is:");
+printf("%s",shmptr);
+printf("\n1.ARP\n2.RARP\n3.EXIT\n");
+scanf("%d",&a);
+switch(a)
+{
+case 1:
+puts("Enter ip address:");
+scanf("%s",ip);
+ptr=strstr(shmptr,ip);
+ptr-=8;
+sscanf(ptr,"%s%*s",ptr2);
+printf("mac addr is:%s",ptr2);
+break;
+case 2:
+puts("Enter mac addr");
+scanf("%s",mac);
+ptr=strstr(shmptr,mac);
+sscanf(ptr,"%*s%s",ptr2);
+printf("%s",ptr2);
+break;
+case 3:
+exit(1);
+}
+}
+ 
+
+
+
+
+
+
+
+
+
+EXPERIMENT 8
+
+
+
+
+
+
+
+
+Implementation of RMI
+
+Server side code -> 
+
+
+import java.rmi.*;
+import java.rmi.server.*;
+public class remoServer extends UnicastRemoteObject implements remoInter
+{
+	public remoServer() throws Remote Exception
+	{
+		super();
+	}
+	public String message() throws Remote Exception
+	{
+		return "hello"
+	}
+
+  public static void main(String args[])
+  {
+	try
+	{
+		remoServer r = new remoServer();
+		Naming.rebind("TestServer", r);
+		System.out.println("The server is ready");
+	}
+	catch(Exception e)
+	{
+	}
+   }
+}
+
+
+Client side Code -> 
+
+import java.rmi.*;
+import java.rmi.registry.*;
+public class remoClint
+{
+	public static void main(String args[])
+      {
+		try
+		{
+			remonInter s =(remoInter)
+			Naming.lookop("TestServer");
+			System.out.println(s.message[]);
+		}
+		catch(Exception e)
+		{
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+ASSIGNMENT 10
+
+
+
+
+
+
+
+
+
+
+Implement the data link layer framing methods such as character count ,character stuffing and bit stuffing.
+
+
+#include<stdio.h>
+#include<string.h>
+void main()
+{
+int a[20],b[30],i,j,k,count,n;
+printf("Enter frame length:");
+scanf("%d",&n);
+printf("Enter input frame (0's & 1's only):");
+for(i=0;i<n;i++)
+scanf("%d",&a[i]);
+i=0; count=1; j=0;
+while(i<n)
+{
+if(a[i]==1)
+{
+b[j]=a[i];
+for(k=i+1;a[k]==1 && k<n && count<5;k++)
+{
+j++;
+b[j]=a[k];
+count++;
+if(count==5)
+{
+j++;
+b[j]=0;
+}
+i=k;
+}}
+else
+{
+b[j]=a[i];
+}
+i++;
+j++;
+}
+printf("After stuffing the frame is:");
+for(i=0;i<j;i++)
+printf("%d",b[i]);
+}
+
+
+
+Write a client server socket programming
+Erite a client-server cycleic redundancy check (CRC) program
+
+
+
+
+Server side code -> 
+
+
+
+
+import socket           
+def xor(a, b):
+ 
+    # initialize result
+    result = []
+ 
+    # Traverse all bits, if bits are
+    # same, then XOR is 0, else 1
+    for i in range(1, len(b)):
+        if a[i] == b[i]:
+            result.append('0')
+        else:
+            result.append('1')
+ 
+    return ''.join(result)
+ 
+ 
+# Performs Modulo-2 division
+def mod2div(divident, divisor):
+ 
+    # Number of bits to be XORed at a time.
+    pick = len(divisor)
+ 
+    # Slicing the divident to appropriate
+    # length for particular step
+    tmp = divident[0 : pick]
+ 
+    while pick < len(divident):
+ 
+        if tmp[0] == '1':
+ 
+            # replace the divident by the result
+            # of XOR and pull 1 bit down
+            tmp = xor(divisor, tmp) + divident[pick]
+ 
+        else: # If leftmost bit is '0'
+ 
+            # If the leftmost bit of the dividend (or the
+            # part used in each step) is 0, the step cannot
+            # use the regular divisor; we need to use an
+            # all-0s divisor.
+            tmp = xor('0'*pick, tmp) + divident[pick]
+ 
+        # increment pick to move further
+        pick += 1
+ 
+    # For the last n bits, we have to carry it out
+    # normally as increased value of pick will cause
+    # Index Out of Bounds.
+    if tmp[0] == '1':
+        tmp = xor(divisor, tmp)
+    else:
+        tmp = xor('0'*pick, tmp)
+ 
+    checkword = tmp
+    return checkword
+ 
+# Function used at the sender side to encode
+# data by appending remainder of modular division
+# at the end of data.
+def encodeData(data, key):
+ 
+    l_key = len(key)
+ 
+    # Appends n-1 zeroes at end of data
+    appended_data = data + '0'*(l_key-1)
+    remainder = mod2div(appended_data, key)
+ 
+    # Append remainder in the original data
+    codeword = data + remainder
+    return codeword   
+     
+# Create a socket object
+s = socket.socket()       
+ 
+# Define the port on which you want to connect
+port = 12345           
+ 
+# connect to the server on local computer
+s.connect(('127.0.0.1', port))
+ 
+# Send data to server 'Hello world'
+ 
+## s.sendall('Hello World')
+ 
+input_string = input("Enter data you want to send->")
+#s.sendall(input_string)
+data =(''.join(format(ord(x), 'b') for x in input_string))
+print("Entered data in binary format :",data)
+key = "1001"
+ 
+ans = encodeData(data,key)
+print("Encoded data to be sent to server in binary format :",ans)
+s.sendto(ans.encode(),('127.0.0.1', 12345))
+ 
+ 
+# receive data from the server
+print("Received feedback from server :",s.recv(1024).decode())
+ 
+# close the connection
+s.close()
+
+
+
+
+Client Side Code ->
+
+
+
+import socket
+def xor(a, b):
+ 
+    # initialize result
+    result = []
+ 
+    # Traverse all bits, if bits are
+    # same, then XOR is 0, else 1
+    for i in range(1, len(b)):
+        if a[i] == b[i]:
+            result.append('0')
+        else:
+            result.append('1')
+ 
+    return ''.join(result)
+ 
+ 
+# Performs Modulo-2 division
+def mod2div(divident, divisor):
+ 
+    # Number of bits to be XORed at a time.
+    pick = len(divisor)
+ 
+    # Slicing the divident to appropriate
+    # length for particular step
+    tmp = divident[0: pick]
+ 
+    while pick < len(divident):
+ 
+        if tmp[0] == '1':
+ 
+            # replace the divident by the result
+            # of XOR and pull 1 bit down
+            tmp = xor(divisor, tmp) + divident[pick]
+ 
+        else:  # If leftmost bit is '0'
+            # If the leftmost bit of the dividend (or the
+            # part used in each step) is 0, the step cannot
+            # use the regular divisor; we need to use an
+            # all-0s divisor.
+            tmp = xor('0'*pick, tmp) + divident[pick]
+ 
+        # increment pick to move further
+        pick += 1
+ 
+    # For the last n bits, we have to carry it out
+    # normally as increased value of pick will cause
+    # Index Out of Bounds.
+    if tmp[0] == '1':
+        tmp = xor(divisor, tmp)
+    else:
+        tmp = xor('0'*pick, tmp)
+ 
+    checkword = tmp
+    return checkword
+ 
+# Function used at the receiver side to decode
+# data received by sender
+ 
+ 
+def decodeData(data, key):
+ 
+    l_key = len(key)
+ 
+    # Appends n-1 zeroes at end of data
+    appended_data = data.decode() + '0'*(l_key-1)
+    remainder = mod2div(appended_data, key)
+ 
+    return remainder
+ 
+ 
+# Creating Socket
+s = socket.socket()
+print("Socket successfully created")
+ 
+# reserve a port on your computer in our
+# case it is 12345 but it can be anything
+port = 12345
+ 
+s.bind(('', port))
+print("socket binded to %s" % (port))
+# put the socket into listening mode
+s.listen(5)
+print("socket is listening")
+ 
+ 
+while True:
+    # Establish connection with client.
+    c, addr = s.accept()
+    print('Got connection from', addr)
+ 
+    # Get data from client
+    data = c.recv(1024)
+ 
+    print("Received encoded data in binary format :", data.decode())
+ 
+    if not data:
+        break
+ 
+    key = "1001"
+ 
+    ans = decodeData(data, key)
+    print("Remainder after decoding is->"+ans)
+ 
+    # If remainder is all zeros then no error occurred
+    temp = "0" * (len(key) - 1)
+    if ans == temp:
+        c.sendto(("THANK you Data ->"+data.decode() +
+                  " Received No error FOUND").encode(), ('127.0.0.1', 12345))
+    else:
+        c.sendto(("Error in data").encode(), ('127.0.0.1', 12345))
+ 
+    c.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASSIGNMENT 11
+
+
+
+
+
+
+
+
+
+
+
+
+Implement on a data set of characters the three CRC polynomials – CRC 12, CRC 16 and CRC CCIP.
+
+
+#include<stdio.h>
+int gen[4],genl,frl,rem[4];
+void main()
+{
+int i,j,fr[8],dupfr[11],recfr[11],tlen,flag;
+frl=8; genl=4;
+printf("Enter frame:");
+for(i=0;i<frl;i++)
+{
+scanf("%d",&fr[i]);
+dupfr[i]=fr[i];
+}
+printf("Enter generator:");
+for(i=0;i<genl;i++)
+scanf("%d",&gen[i]);
+tlen=frl+genl-1;
+for(i=frl;i<tlen;i++)
+{
+dupfr[i]=0;
+}
+remainder(dupfr);
+for(i=0;i<frl;i++)
+{
+recfr[i]=fr[i];
+}
+for(i=frl,j=1;j<genl;i++,j++)
+{
+recfr[i]=rem[j];
+}
+remainder(recfr);
+flag=0;
+for(i=0;i<4;i++)
+{
+if(rem[i]!=0)
+flag++;
+}
+if(flag==0)
+{
+printf("frame received correctly");
+}
+else
+{
+printf("the received frame is wrong");
+}
+}
+remainder(int fr[])
+{
+int k,k1,i,j;
+for(k=0;k<frl;k++)
+{
+if(fr[k]==1)
+{
+k1=k;
+for(i=0,j=k;i<genl;i++,j++)
+{
+rem[i]=fr[j]^gen[i];
+}
+for(i=0;i<genl;i++)
+{
+fr[k1]=rem[i];
+k1++;
+}
+}
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
